@@ -9,6 +9,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar'
+import { Icon } from '@iconify/vue';
 
 // Menu items.
 const items = [
@@ -41,7 +42,23 @@ const items = [
 </script>
 
 <template>
-    <Sidebar>
+    <Sidebar collapsible="icon">
+        <SidebarHeader>
+            <SidebarMenu>
+                <SidebarMenuItem>
+                    <SidebarMenuButton size="lg">
+                        <div
+                            class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                            <GalleryVerticalEnd class="size-4" />
+                        </div>
+                        <div class="flex flex-col gap-0.5 leading-none">
+                            <span class="font-semibold">Documentation</span>
+                            <span class="">v1.0.0</span>
+                        </div>
+                    </SidebarMenuButton>
+                </SidebarMenuItem>
+            </SidebarMenu>
+        </SidebarHeader>
         <SidebarContent>
             <SidebarGroup>
                 <SidebarGroupLabel>Application</SidebarGroupLabel>
@@ -50,7 +67,7 @@ const items = [
                         <SidebarMenuItem v-for="item in items" :key="item.title">
                             <SidebarMenuButton as-child>
                                 <a :href="item.url">
-                                    <Icon :icon="item.icon" class="text-3xl text-indigo-600" />
+                                    <Icon :icon="item.icon" class="text-4xl text-amber-600" />
                                     <span>{{ item.title }}</span>
                                 </a>
                             </SidebarMenuButton>

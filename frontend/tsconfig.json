@@ -4,6 +4,7 @@
     "useDefineForClassFields": true,
     "module": "ESNext",
     "moduleResolution": "Node",
+    // "moduleResolution": "bundler",
     "strict": true,
     "jsx": "preserve",
     "sourceMap": true,
@@ -15,9 +16,10 @@
       "DOM"
     ],
     "skipLibCheck": true,
-    "declaration": true,
-    "emitDeclarationOnly": true, // Optional, to emit only declaration files
-    // ... other options
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
   "include": [
     "src/**/*.ts",
@@ -25,19 +27,9 @@
     "src/**/*.tsx",
     "src/**/*.vue"
   ],
-  "files": [],
   "references": [
-    {
-      "path": "./tsconfig.app.json"
-    },
     {
       "path": "./tsconfig.node.json"
     }
-  ],
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"]
-    }
-  }
+  ]
 }
