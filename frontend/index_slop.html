@@ -1,0 +1,479 @@
+<!-- <!DOCTYPE html> -->
+<!-- <html lang="en"> -->
+<!-- <head> -->
+<!--     <meta charset="UTF-8"/> -->
+<!--     <meta content="width=device-width, initial-scale=1.0" name="viewport"/> -->
+<!--     <title>opal</title> -->
+<!-- </head> -->
+<!-- <body> -->
+<!-- <div id="app"></div> -->
+<!-- <script src="./src/main.ts" type="module"></script> -->
+<!-- </body> -->
+<!-- </html> -->
+<!---->
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Aether Editor</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&amp;family=Inter:wght@300;400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#FFBF00", // Amber Fire
+                        "primary-dim": "#B38600",
+                        "background-light": "#F5F5F4", // Stone 100
+                        "background-dark": "#121212", // Deep Charcoal
+                        "surface-light": "#FFFFFF",
+                        "surface-dark": "#1A1A1A",
+                        "sidebar-bg": "#161616",
+                        "workspace-bg": "#0f0f0f",
+                        "border-light": "#E7E5E4",
+                        "border-dark": "#2D2D2D",
+                        "glow": "rgba(255, 191, 0, 0.15)",
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Cinzel', 'serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    typography: (theme) => ({
+                        DEFAULT: {
+                            css: {
+                                color: theme('colors.gray.800'),
+                                h1: {fontFamily: theme('fontFamily.serif')},
+                                h2: {fontFamily: theme('fontFamily.serif')},
+                                h3: {fontFamily: theme('fontFamily.serif')},
+                            },
+                        },
+                        dark: {
+                            css: {
+                                color: theme('colors.gray.400'),
+                                h1: {color: theme('colors.white')},
+                                h2: {color: theme('colors.gray.100')},
+                                h3: {color: theme('colors.gray.200')},
+                                strong: {color: theme('colors.gray.100')},
+                                code: {color: theme('colors.primary')},
+                            },
+                        },
+                    }),
+                },
+            },
+        };
+    </script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #525252;
+            border-radius: 2px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #FFBF00;
+        }
+
+        @keyframes emberPulse {
+            0% {
+                box-shadow: 0 0 5px rgba(255, 191, 0, 0.1);
+            }
+
+            50% {
+                box-shadow: 0 0 15px rgba(255, 191, 0, 0.3);
+            }
+
+            100% {
+                box-shadow: 0 0 5px rgba(255, 191, 0, 0.1);
+            }
+        }
+
+        .active-glow {
+            animation: emberPulse 3s infinite;
+        }
+
+        .glass {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-gray-800 dark:text-gray-300 font-sans h-screen flex overflow-hidden transition-colors duration-300 selection:bg-primary selection:text-black">
+    <div class="flex flex-row h-full z-30">
+        <nav
+            class="w-12 flex-shrink-0 flex flex-col items-center py-4 bg-workspace-bg border-r border-border-dark space-y-4 overflow-y-auto no-scrollbar z-40">
+            <button
+                class="w-8 h-8 flex items-center justify-center rounded-lg text-primary hover:bg-white/5 transition-colors mb-2">
+                <span class="material-symbols-outlined text-[20px]">local_fire_department</span>
+            </button>
+            <div class="w-6 h-px bg-border-dark"></div>
+            <div class="flex flex-col space-y-3 w-full items-center">
+                <button
+                    class="group relative w-8 h-8 flex items-center justify-center rounded-lg bg-surface-dark text-primary shadow-[0_0_15px_rgba(255,191,0,0.15)] ring-1 ring-primary/30">
+                    <span class="material-symbols-outlined text-[18px]">terminal</span>
+                    <div class="absolute left-[-10px] top-1/2 -translate-y-1/2 w-1 h-4 bg-primary rounded-r-full"></div>
+                </button>
+                <button
+                    class="group relative w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 hover:text-gray-300 hover:bg-white/5 transition-all">
+                    <span class="material-symbols-outlined text-[18px]">folder_open</span>
+                </button>
+                <button
+                    class="group relative w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 hover:text-gray-300 hover:bg-white/5 transition-all">
+                    <span class="material-symbols-outlined text-[18px]">rocket_launch</span>
+                </button>
+                <button
+                    class="group relative w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 hover:text-gray-300 hover:bg-white/5 transition-all">
+                    <span class="material-symbols-outlined text-[18px]">cloud</span>
+                </button>
+            </div>
+            <div class="flex-1"></div>
+            <div class="flex flex-col space-y-3 w-full items-center">
+                <button
+                    class="group relative w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 hover:text-primary hover:bg-white/5 transition-all"
+                    onclick="document.documentElement.classList.toggle('dark')">
+                    <span class="material-symbols-outlined text-[18px]">contrast</span>
+                </button>
+                <button
+                    class="group relative w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 hover:text-primary hover:bg-white/5 transition-all">
+                    <span class="material-symbols-outlined text-[18px]">settings</span>
+                </button>
+                <div class="w-6 h-8 flex items-center justify-center">
+                    <img alt="User" class="w-6 h-6 rounded-md ring-1 ring-border-dark"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfVWz2KZlf9pB0z-6TiD_86w_yX94oeUsaefgGncL5gCqaxFoNYZ_XMoeHuQ-3G4ONGSlznW_WLuFr1ukj6hwivtmf8ZKb6tGtBn838eUyI-7I96a2ASkCdRZQ70zdNyclBXmYDFkOZYoiwMs1DZg1EQHbC1ZdzysZse2uQFOgEbWlb2ik6inaOq_xknF1I8mnlWYn7TWpHZeIkUmUBV9Wvrl97kmYglXZ5CWzDLohsGe1Cal-rCadbVJIDJ67pYlQbep_eYdTA2s" />
+                </div>
+            </div>
+        </nav>
+        <aside
+            class="w-64 flex-shrink-0 border-r border-border-light dark:border-border-dark flex flex-col bg-surface-light dark:bg-sidebar-bg transition-all duration-300">
+            <div
+                class="h-14 flex items-center px-3 border-b border-border-light dark:border-border-dark justify-between">
+                <div class="flex items-center space-x-1">
+                    <button class="p-1.5 rounded-md text-gray-400 hover:text-white hover:bg-white/5 transition-colors">
+                        <span class="material-symbols-outlined text-[20px]">dock_to_left</span>
+                    </button>
+                </div>
+                <div class="flex items-center space-x-1">
+                    <button class="p-1.5 rounded-md text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
+                        title="Sort">
+                        <span class="material-symbols-outlined text-[18px]">sort</span>
+                    </button>
+                    <button class="p-1.5 rounded-md text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
+                        title="View Options">
+                        <span class="material-symbols-outlined text-[18px]">grid_view</span>
+                    </button>
+                    <button class="p-1.5 rounded-md text-gray-400 hover:text-primary hover:bg-white/5 transition-colors"
+                        title="New Note">
+                        <span class="material-symbols-outlined text-[18px]">add</span>
+                    </button>
+                </div>
+            </div>
+            <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-6">
+                <div class="flex items-center px-2 pb-2">
+                    <h2 class="text-sm font-semibold text-gray-200 tracking-wide font-serif">Arch Linux</h2>
+                    <span
+                        class="ml-2 px-1.5 py-0.5 text-[10px] bg-primary/10 text-primary border border-primary/20 rounded">WS-1</span>
+                </div>
+                <div>
+                    <div class="flex items-center justify-between px-2 mb-2 group cursor-pointer">
+                        <span
+                            class="text-xs font-medium text-gray-500 uppercase tracking-wider group-hover:text-gray-300 transition-colors">Folders</span>
+                        <span
+                            class="material-symbols-outlined text-[14px] text-gray-600 group-hover:text-gray-400 opacity-0 group-hover:opacity-100 transition-all">add</span>
+                    </div>
+                    <div class="space-y-0.5">
+                        <a class="flex items-center px-2 py-1.5 text-sm rounded-md text-gray-400 hover:text-gray-200 hover:bg-white/5 transition-colors"
+                            href="#">
+                            <span class="material-symbols-outlined text-[18px] mr-2 opacity-70">folder</span>
+                            <span>Config Files</span>
+                        </a>
+                        <a class="flex items-center px-2 py-1.5 text-sm rounded-md text-gray-400 hover:text-gray-200 hover:bg-white/5 transition-colors"
+                            href="#">
+                            <span class="material-symbols-outlined text-[18px] mr-2 opacity-70">folder</span>
+                            <span>Documentation</span>
+                        </a>
+                        <a class="flex items-center px-2 py-1.5 text-sm rounded-md text-gray-400 hover:text-gray-200 hover:bg-white/5 transition-colors"
+                            href="#">
+                            <span class="material-symbols-outlined text-[18px] mr-2 opacity-70">folder</span>
+                            <span>Scripts</span>
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex items-center justify-between px-2 mb-2 group cursor-pointer">
+                        <span
+                            class="text-xs font-medium text-gray-500 uppercase tracking-wider group-hover:text-gray-300 transition-colors">Recent
+                            Notes</span>
+                    </div>
+                    <div class="space-y-0.5">
+                        <a class="group flex items-center px-2 py-1.5 text-sm rounded-md bg-white/5 text-primary relative overflow-hidden active-glow"
+                            href="#">
+                            <span class="material-symbols-outlined text-[18px] mr-2 fill-1">article</span>
+                            <span class="truncate font-medium">Vulkan Config</span>
+                            <div
+                                class="absolute right-2 w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_8px_rgba(255,191,0,0.8)]">
+                            </div>
+                        </a>
+                        <a class="group flex items-center px-2 py-1.5 text-sm rounded-md text-gray-400 hover:text-gray-200 hover:bg-white/5 transition-colors"
+                            href="#">
+                            <span class="material-symbols-outlined text-[18px] mr-2 opacity-70">article</span>
+                            <span class="truncate">Game Hunt Summary</span>
+                        </a>
+                        <a class="group flex items-center px-2 py-1.5 text-sm rounded-md text-gray-400 hover:text-gray-200 hover:bg-white/5 transition-colors"
+                            href="#">
+                            <span class="material-symbols-outlined text-[18px] mr-2 opacity-70">article</span>
+                            <span class="truncate">Driving Routes</span>
+                        </a>
+                        <a class="group flex items-center px-2 py-1.5 text-sm rounded-md text-gray-400 hover:text-gray-200 hover:bg-white/5 transition-colors"
+                            href="#">
+                            <span class="material-symbols-outlined text-[18px] mr-2 opacity-70">article</span>
+                            <span class="truncate">My Baby Seeds</span>
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <div class="px-2 mb-2">
+                        <span class="text-xs font-medium text-gray-500 uppercase tracking-wider">Tags</span>
+                    </div>
+                    <div class="flex flex-wrap gap-2 px-2">
+                        <span
+                            class="px-2 py-1 rounded-full bg-border-dark text-[11px] text-gray-400 border border-transparent hover:border-gray-600 cursor-pointer">#linux</span>
+                        <span
+                            class="px-2 py-1 rounded-full bg-border-dark text-[11px] text-gray-400 border border-transparent hover:border-gray-600 cursor-pointer">#gpu</span>
+                        <span
+                            class="px-2 py-1 rounded-full bg-border-dark text-[11px] text-gray-400 border border-transparent hover:border-gray-600 cursor-pointer">#config</span>
+                    </div>
+                </div>
+            </nav>
+            <div class="p-3 border-t border-border-light dark:border-border-dark bg-surface-light dark:bg-sidebar-bg">
+                <div class="relative group">
+                    <span
+                        class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500 group-focus-within:text-primary transition-colors">
+                        <span class="material-symbols-outlined text-[16px]">search</span>
+                    </span>
+                    <input
+                        class="w-full bg-background-light dark:bg-background-dark border border-transparent focus:border-primary/50 text-sm rounded-md py-1.5 pl-9 pr-3 text-gray-300 placeholder-gray-600 focus:ring-0 transition-all shadow-sm"
+                        placeholder="Quick Find..." type="text" />
+                    <span class="absolute inset-y-0 right-0 flex items-center pr-2">
+                        <kbd
+                            class="hidden group-focus-within:hidden px-1.5 py-0.5 text-[10px] font-mono text-gray-500 border border-gray-700 rounded bg-surface-dark">⌘K</kbd>
+                    </span>
+                </div>
+            </div>
+        </aside>
+    </div>
+    <main class="flex-1 flex flex-col relative overflow-hidden bg-background-light dark:bg-background-dark">
+        <header
+            class="h-14 border-b border-border-light dark:border-border-dark flex items-center px-4 md:px-8 justify-between bg-background-light/80 dark:bg-background-dark/80 glass z-10 sticky top-0">
+            <div class="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400 font-mono">
+                <span class="hover:text-gray-800 dark:hover:text-gray-200 cursor-pointer transition-colors">Arch
+                    Linux</span>
+                <span class="material-symbols-outlined text-xs opacity-50">chevron_right</span>
+                <span class="text-primary font-semibold">Vulkan</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span
+                    class="text-xs text-gray-400 dark:text-gray-600 uppercase tracking-widest font-mono hidden sm:inline-block">Read
+                    Only</span>
+                <button class="text-gray-400 hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined text-lg">edit</span>
+                </button>
+                <button class="text-gray-400 hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined text-lg">more_vert</span>
+                </button>
+            </div>
+        </header>
+        <div class="flex-1 overflow-y-auto relative">
+            <div
+                class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-primary/5 rounded-full blur-[100px] pointer-events-none hidden dark:block">
+            </div>
+            <article class="max-w-3xl mx-auto px-6 py-12 md:py-16 prose dark:prose-invert prose-stone">
+                <h1 class="text-4xl md:text-5xl mb-2 !leading-tight tracking-tight relative inline-block">
+                    Vulkan
+                    <span
+                        class="absolute -bottom-2 left-0 w-1/3 h-1 bg-gradient-to-r from-primary to-transparent rounded-full opacity-80"></span>
+                </h1>
+                <p class="text-xl text-gray-500 dark:text-gray-400 font-light mt-6 leading-relaxed">
+                    Vulkan and Hardware Acceleration (Intel Xe) configuration guide.
+                </p>
+                <div class="mt-12 group">
+                    <h2
+                        class="flex items-center text-2xl font-serif text-gray-800 dark:text-gray-100 group-hover:text-primary transition-colors duration-300">
+                        <span
+                            class="material-symbols-outlined mr-2 text-primary opacity-0 group-hover:opacity-100 transition-opacity text-xl -ml-8">arrow_right</span>
+                        Vulkan Installation
+                    </h2>
+                    <p class="text-gray-600 dark:text-gray-400">
+                        For Intel Xe graphics (and most modern Intel GPUs), use the <code
+                            class="bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-primary px-1.5 py-0.5 rounded text-sm font-mono">vulkan-intel</code>
+                        driver.
+                    </p>
+                    <div
+                        class="relative mt-4 rounded-lg overflow-hidden border border-border-light dark:border-gray-800 bg-gray-50 dark:bg-[#1E1E1E] shadow-sm">
+                        <div
+                            class="flex items-center justify-between px-4 py-2 border-b border-border-light dark:border-gray-800 bg-gray-100/50 dark:bg-[#252525]">
+                            <span class="text-xs text-gray-400 font-mono">bash</span>
+                            <button class="text-gray-400 hover:text-white transition-colors"><span
+                                    class="material-symbols-outlined text-sm">content_copy</span></button>
+                        </div>
+                        <div class="p-4 font-mono text-sm overflow-x-auto">
+                            <span class="text-yellow-600 dark:text-yellow-500">sudo</span> <span
+                                class="text-gray-800 dark:text-gray-300">pacman</span> <span
+                                class="text-blue-600 dark:text-blue-400">-S</span> <span
+                                class="text-gray-600 dark:text-gray-400">vulkan-intel vulkan-icd-loader</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-10 group">
+                    <h2
+                        class="flex items-center text-2xl font-serif text-gray-800 dark:text-gray-100 group-hover:text-primary transition-colors duration-300">
+                        <span
+                            class="material-symbols-outlined mr-2 text-primary opacity-0 group-hover:opacity-100 transition-opacity text-xl -ml-8">arrow_right</span>
+                        Optional: 32-bit Support
+                    </h2>
+                    <p class="text-gray-600 dark:text-gray-400">
+                        Required for Steam and some Wine/Proton games. Ensure multilib is enabled.
+                    </p>
+                    <div
+                        class="relative mt-4 rounded-lg overflow-hidden border border-border-light dark:border-gray-800 bg-gray-50 dark:bg-[#1E1E1E] shadow-sm">
+                        <div
+                            class="flex items-center justify-between px-4 py-2 border-b border-border-light dark:border-gray-800 bg-gray-100/50 dark:bg-[#252525]">
+                            <span class="text-xs text-gray-400 font-mono">bash</span>
+                            <button class="text-gray-400 hover:text-white transition-colors"><span
+                                    class="material-symbols-outlined text-sm">content_copy</span></button>
+                        </div>
+                        <div class="p-4 font-mono text-sm overflow-x-auto">
+                            <span class="text-yellow-600 dark:text-yellow-500">sudo</span> <span
+                                class="text-gray-800 dark:text-gray-300">pacman</span> <span
+                                class="text-blue-600 dark:text-blue-400">-S</span> <span
+                                class="text-gray-600 dark:text-gray-400">lib32-vulkan-intel
+                                lib32-vulkan-icd-loader</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-10 group">
+                    <h2
+                        class="flex items-center text-2xl font-serif text-gray-800 dark:text-gray-100 group-hover:text-primary transition-colors duration-300">
+                        <span
+                            class="material-symbols-outlined mr-2 text-primary opacity-0 group-hover:opacity-100 transition-opacity text-xl -ml-8">arrow_right</span>
+                        Verification
+                    </h2>
+                    <p class="text-gray-600 dark:text-gray-400">
+                        Install <code
+                            class="bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-primary px-1.5 py-0.5 rounded text-sm font-mono">vulkan-tools</code>
+                        to verify the installation integrity.
+                    </p>
+                    <div
+                        class="relative mt-4 rounded-lg overflow-hidden border border-border-light dark:border-gray-800 bg-gray-50 dark:bg-[#1E1E1E] shadow-sm">
+                        <div
+                            class="flex items-center justify-between px-4 py-2 border-b border-border-light dark:border-gray-800 bg-gray-100/50 dark:bg-[#252525]">
+                            <span class="text-xs text-gray-400 font-mono">bash</span>
+                            <button class="text-gray-400 hover:text-white transition-colors"><span
+                                    class="material-symbols-outlined text-sm">content_copy</span></button>
+                        </div>
+                        <div class="p-4 font-mono text-sm overflow-x-auto">
+                            <div class="mb-1"><span class="text-yellow-600 dark:text-yellow-500">sudo</span> <span
+                                    class="text-gray-800 dark:text-gray-300">pacman</span> <span
+                                    class="text-blue-600 dark:text-blue-400">-S</span> <span
+                                    class="text-gray-600 dark:text-gray-400">vulkan-tools</span></div>
+                            <div><span class="text-purple-600 dark:text-purple-400">vulkaninfo</span> | <span
+                                    class="text-yellow-600 dark:text-yellow-500">grep</span> <span
+                                    class="text-green-600 dark:text-green-400">"deviceType"</span></div>
+                        </div>
+                    </div>
+                </div>
+                <hr class="my-12 border-border-light dark:border-gray-800" />
+                <div class="mt-10 group">
+                    <h2
+                        class="flex items-center text-2xl font-serif text-gray-800 dark:text-gray-100 group-hover:text-primary transition-colors duration-300">
+                        <span
+                            class="material-symbols-outlined mr-2 text-primary opacity-0 group-hover:opacity-100 transition-opacity text-xl -ml-8">arrow_right</span>
+                        Hardware Acceleration (VA-API)
+                    </h2>
+                    <p class="text-gray-600 dark:text-gray-400">
+                        Intel Xe graphics use the <code
+                            class="bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-primary px-1.5 py-0.5 rounded text-sm font-mono">intel-media-driver</code>
+                        for hardware-accelerated video decoding/encoding.
+                    </p>
+                    <div
+                        class="relative mt-4 rounded-lg overflow-hidden border border-border-light dark:border-gray-800 bg-gray-50 dark:bg-[#1E1E1E] shadow-sm">
+                        <div
+                            class="flex items-center justify-between px-4 py-2 border-b border-border-light dark:border-gray-800 bg-gray-100/50 dark:bg-[#252525]">
+                            <span class="text-xs text-gray-400 font-mono">bash</span>
+                            <button class="text-gray-400 hover:text-white transition-colors"><span
+                                    class="material-symbols-outlined text-sm">content_copy</span></button>
+                        </div>
+                        <div class="p-4 font-mono text-sm overflow-x-auto">
+                            <span class="text-yellow-600 dark:text-yellow-500">sudo</span> <span
+                                class="text-gray-800 dark:text-gray-300">pacman</span> <span
+                                class="text-blue-600 dark:text-blue-400">-S</span> <span
+                                class="text-gray-600 dark:text-gray-400">intel-media-driver libva-utils</span>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="mt-20 pt-6 border-t border-border-light dark:border-gray-800 flex justify-between text-xs text-gray-400 font-mono">
+                    <div class="flex space-x-4">
+                        <span class="hover:text-primary cursor-pointer transition-colors">0 backlinks</span>
+                        <span class="hover:text-primary cursor-pointer transition-colors">183 words</span>
+                        <span>1,354 characters</span>
+                    </div>
+                    <div>
+                        Last edited: <span class="text-gray-500 dark:text-gray-300">Today at 10:42 AM</span>
+                    </div>
+                </div>
+            </article>
+            <div class="h-20"></div>
+        </div>
+    </main>
+    <aside
+        class="hidden xl:flex w-14 border-l border-border-light dark:border-border-dark flex-col items-center py-4 bg-surface-light dark:bg-surface-dark z-20">
+        <button class="p-2 mb-4 text-gray-400 hover:text-primary transition-colors tooltip relative group">
+            <span class="material-symbols-outlined">calendar_month</span>
+            <span
+                class="absolute right-12 top-1.5 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">Calendar</span>
+        </button>
+        <button class="p-2 mb-4 text-gray-400 hover:text-primary transition-colors group relative">
+            <span class="material-symbols-outlined">search</span>
+            <span
+                class="absolute right-12 top-1.5 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">Search</span>
+        </button>
+        <div class="flex-1"></div>
+        <button class="p-2 mt-4 text-gray-400 hover:text-primary transition-colors group relative">
+            <span class="material-symbols-outlined">help</span>
+            <span
+                class="absolute right-12 top-1.5 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">Help</span>
+        </button>
+    </aside>
+</body>
+
+</html>
