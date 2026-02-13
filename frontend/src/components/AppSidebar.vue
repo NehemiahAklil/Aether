@@ -1,9 +1,23 @@
 <script setup lang="ts">
 import type { SidebarProps } from "@/components/ui/sidebar"
-import { ArchiveX, Command, File, Inbox, Send, Trash2 } from "lucide-vue-next"
-import { h, ref } from "vue"
-import NavUser from "@/components/NavUser.vue"
-import { Label } from "@/components/ui/label"
+import {
+    Flame,
+    Terminal,
+    FolderOpen,
+    Rocket,
+    Cloud,
+    Settings,
+    Moon,
+    Sun,
+    PanelLeftClose,
+    ArrowUpDown,
+    LayoutGrid,
+    Plus,
+    Folder,
+    FileText,
+    Search
+} from "lucide-vue-next"
+import { h, ref, computed } from "vue"
 import {
     Sidebar,
     SidebarContent,
@@ -11,223 +25,201 @@ import {
     SidebarGroup,
     SidebarGroupContent,
     SidebarHeader,
-    SidebarInput,
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
     useSidebar,
 } from "@/components/ui/sidebar"
-import { Switch } from "@/components/ui/switch"
-import { Icon } from "@iconify/vue"
+import { Input } from "@/components/ui/input"
+import { useColorMode } from '@vueuse/core'
+
+const mode = useColorMode()
+
+const toggleTheme = () => {
+    mode.value = mode.value === 'dark' ? 'light' : 'dark'
+}
 
 const props = withDefaults(defineProps<SidebarProps>(), {
     collapsible: "icon",
 })
 
-// This is sample data
-const data = {
-    user: {
-        name: "shadcn",
-        email: "m@example.com",
-        avatar: "/avatars/shadcn.jpg",
-    },
-    navMain: [
-        {
-            title: "Arch Linux",
-            url: "#",
-            icon: "solar:programming-outline",
-            isActive: true,
-        },
-        {
-            title: "Files",
-            url: "#",
-            icon: "solar:folder-open-linear",
-            isActive: false,
-        },
-        {
-            title: "Projects",
-            url: "#",
-            icon: "solar:rocket-2-outline",
-            isActive: false,
-        },
-        {
-            title: "Cloud",
-            url: "#",
-            icon: "solar:cloud-linear",
-            isActive: false,
-        },
-    ],
-    mails: [
-        {
-            name: "William Smith",
-            email: "williamsmith@example.com",
-            subject: "Meeting Tomorrow",
-            date: "09:34 AM",
-            teaser:
-                "Hi team, just a reminder about our meeting tomorrow at 10 AM.\nPlease come prepared with your project updates.",
-        },
-        {
-            name: "Alice Smith",
-            email: "alicesmith@example.com",
-            subject: "Re: Project Update",
-            date: "Yesterday",
-            teaser: "Thanks for the update. The progress looks great so far.\nLet's schedule a call to discuss the next steps.",
-        },
-        {
-            name: "Bob Johnson",
-            email: "bobjohnson@example.com",
-            subject: "Weekend Plans",
-            date: "2 days ago",
-            teaser:
-                "Hey everyone! I'm thinking of organizing a team outing this weekend.\nWould you be interested in a hiking trip or a beach day?",
-        },
-        {
-            name: "Emily Davis",
-            email: "emilydavis@example.com",
-            subject: "Re: Question about Budget",
-            date: "2 days ago",
-            teaser:
-                "I've reviewed the budget numbers you sent over.\nCan we set up a quick call to discuss some potential adjustments?",
-        },
-        {
-            name: "Michael Wilson",
-            email: "michaelwilson@example.com",
-            subject: "Important Announcement",
-            date: "1 week ago",
-            teaser:
-                "Please join us for an all-hands meeting this Friday at 3 PM.\nWe have some exciting news to share about the company's future.",
-        },
-        {
-            name: "Sarah Brown",
-            email: "sarahbrown@example.com",
-            subject: "Re: Feedback on Proposal",
-            date: "1 week ago",
-            teaser:
-                "Thank you for sending over the proposal. I've reviewed it and have some thoughts.\nCould we schedule a meeting to discuss my feedback in detail?",
-        },
-        {
-            name: "David Lee",
-            email: "davidlee@example.com",
-            subject: "New Project Idea",
-            date: "1 week ago",
-            teaser:
-                "I've been brainstorming and came up with an interesting project concept.\nDo you have time this week to discuss its potential impact and feasibility?",
-        },
-        {
-            name: "Olivia Wilson",
-            email: "oliviawilson@example.com",
-            subject: "Vacation Plans",
-            date: "1 week ago",
-            teaser:
-                "Just a heads up that I'll be taking a two-week vacation next month.\nI'll make sure all my projects are up to date before I leave.",
-        },
-        {
-            name: "James Martin",
-            email: "jamesmartin@example.com",
-            subject: "Re: Conference Registration",
-            date: "1 week ago",
-            teaser:
-                "I've completed the registration for the upcoming tech conference.\nLet me know if you need any additional information from my end.",
-        },
-        {
-            name: "Sophia White",
-            email: "sophiawhite@example.com",
-            subject: "Team Dinner",
-            date: "1 week ago",
-            teaser:
-                "To celebrate our recent project success, I'd like to organize a team dinner.\nAre you available next Friday evening? Please let me know your preferences.",
-        },
-    ],
-}
+const folders = [
+    { title: "Config Files", url: "#" },
+    { title: "Documentation", url: "#" },
+    { title: "Scripts", url: "#" },
+]
 
-const activeItem = ref(data.navMain[0])
-const mails = ref(data.mails)
-const { setOpen } = useSidebar()
+const recentNotes = [
+    { title: "Vulkan Config", url: "#", active: true },
+    { title: "Game Hunt Summary", url: "#" },
+    { title: "Driving Routes", url: "#" },
+    { title: "My Baby Seeds", url: "#" },
+]
+
+const tags = ["#linux", "#gpu", "#config"]
+
+const activeNav = ref("terminal")
 </script>
 
 <template>
     <Sidebar class="overflow-hidden *:data-[sidebar=sidebar]:flex-row" v-bind="props">
-        <!-- This is the first sidebar -->
-        <!-- We disable collapsible and adjust width to icon. -->
-        <!-- This will make the sidebar appear as icons. -->
-        <Sidebar collapsible="none" class="bg-[#0f0f0f] w-[calc(var(--sidebar-width-icon)+1px)]! border-r">
-            <SidebarHeader>
+        <!-- Primary Sidebar (Icons) -->
+        <Sidebar collapsible="none" class="bg-workspace-bg w-12! border-r border-border-dark flex-shrink-0">
+            <SidebarHeader class="py-4 flex items-center justify-center">
+                <div class="text-primary hover:bg-white/5 p-1 rounded-lg transition-colors cursor-pointer mb-2">
+                    <Flame :size="20" />
+                </div>
+                <div class="w-6 h-px bg-border-dark my-2"></div>
+            </SidebarHeader>
+            <SidebarContent class="flex flex-col items-center space-y-3 py-2">
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton size="lg" as-child class="md:h-8 md:p-0">
-                            <a href="#">
-                                <div
-                                    class="text-amber-400 flex aspect-square size-8 items-center justify-center rounded-lg">
-                                    <Icon icon="octicon:flame" :width="15" />
-                                </div>
-                                <div class="grid flex-1 text-left text-sm leading-tight">
-                                    <span class="truncate font-medium">Aether</span>
-                                    <span class="truncate text-xs">PKM Power</span>
-                                </div>
-                            </a>
+                        <SidebarMenuButton 
+                            class="w-8 h-8 p-0 flex items-center justify-center rounded-lg transition-all relative"
+                            :class="activeNav === 'terminal' ? 'bg-surface-dark text-primary shadow-[0_0_15px_rgba(255,191,0,0.15)] ring-1 ring-primary/30' : 'text-gray-500 hover:text-gray-300 hover:bg-white/5'"
+                            @click="activeNav = 'terminal'"
+                        >
+                            <Terminal :size="18" />
+                            <div v-if="activeNav === 'terminal'" class="absolute left-[-8px] top-1/2 -translate-y-1/2 w-1 h-4 bg-primary rounded-r-full"></div>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton 
+                            class="w-8 h-8 p-0 flex items-center justify-center rounded-lg text-gray-500 hover:text-gray-300 hover:bg-white/5 transition-all"
+                            @click="activeNav = 'folder'"
+                        >
+                            <FolderOpen :size="18" />
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton 
+                            class="w-8 h-8 p-0 flex items-center justify-center rounded-lg text-gray-500 hover:text-gray-300 hover:bg-white/5 transition-all"
+                            @click="activeNav = 'rocket'"
+                        >
+                            <Rocket :size="18" />
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton 
+                            class="w-8 h-8 p-0 flex items-center justify-center rounded-lg text-gray-500 hover:text-gray-300 hover:bg-white/5 transition-all"
+                            @click="activeNav = 'cloud'"
+                        >
+                            <Cloud :size="18" />
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>
-            </SidebarHeader>
-            <SidebarContent>
-                <SidebarGroup>
-                    <SidebarGroupContent class="px-1.5 md:px-0">
-                        <SidebarMenu>
-                            <SidebarMenuItem v-for="item in data.navMain" :key="item.title">
-                                <SidebarMenuButton :tooltip="h('div', { hidden: false }, item.title)"
-                                    :is-active="activeItem.title === item.title" class="px-2.5 md:px-2"
-                                    :class="{ '!bg-[#0f0f0f] !text-amber-400': activeItem.title == item.title }" @click="() => {
-                                        activeItem = item
-
-                                        const mail = data.mails.sort(() => Math.random() - 0.5)
-                                        mails = mail.slice(0, Math.max(5, Math.floor(Math.random() * 10) + 1))
-                                        setOpen(true)
-                                    }">
-                                    <Icon :icon="item.icon" :width="30" class="text-white" />
-                                    <span>{{ item.title }}</span>
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
-                        </SidebarMenu>
-                    </SidebarGroupContent>
-                </SidebarGroup>
             </SidebarContent>
-            <SidebarFooter>
-                <NavUser :user="data.user" />
+            <SidebarFooter class="py-4 flex flex-col items-center space-y-3">
+                <SidebarMenu>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton 
+                            class="w-8 h-8 p-0 flex items-center justify-center rounded-lg text-gray-500 hover:text-primary hover:bg-white/5 transition-all"
+                            @click="toggleTheme"
+                        >
+                            <Sun v-if="mode === 'dark'" :size="18" />
+                            <Moon v-else :size="18" />
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton class="w-8 h-8 p-0 flex items-center justify-center rounded-lg text-gray-500 hover:text-primary hover:bg-white/5 transition-all">
+                            <Settings :size="18" />
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem class="mt-2">
+                        <div class="w-6 h-6 rounded-md overflow-hidden ring-1 ring-border-dark cursor-pointer">
+                            <img alt="User" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfVWz2KZlf9pB0z-6TiD_86w_yX94oeUsaefgGncL5gCqaxFoNYZ_XMoeHuQ-3G4ONGSlznW_WLuFr1ukj6hwivtmf8ZKb6tGtBn838eUyI-7I96a2ASkCdRZQ70zdNyclBXmYDFkOZYoiwMs1DZg1EQHbC1ZdzysZse2uQFOgEbWlb2ik6inaOq_xknF1I8mnlWYn7TWpHZeIkUmUBV9Wvrl97kmYglXZ5CWzDLohsGe1Cal-rCadbVJIDJ67pYlQbep_eYdTA2s" class="w-full h-full object-cover" />
+                        </div>
+                    </SidebarMenuItem>
+                </SidebarMenu>
             </SidebarFooter>
         </Sidebar>
 
-        <!--  This is the second sidebar -->
-        <!--  We disable collapsible and let it fill remaining space -->
-        <Sidebar collapsible="none" class="hidden flex-1 md:flex">
-            <SidebarHeader class="gap-3.5 border-b p-4">
-                <div class="flex w-full items-center justify-between">
-                    <div class="text-base font-medium text-foreground">
-                        {{ activeItem.title }}
-                    </div>
-                    <Label class="flex items-center gap-2 text-sm">
-                        <span>Unreads</span>
-                        <Switch class="shadow-none" />
-                    </Label>
+        <!-- Secondary Sidebar (Content) -->
+        <Sidebar collapsible="none" class="flex-1 bg-surface-light dark:bg-sidebar-bg border-r border-border-light dark:border-border-dark flex flex-col min-w-[256px]">
+            <SidebarHeader class="h-14 border-b border-border-light dark:border-border-dark px-3 flex flex-row items-center justify-between gap-0">
+                <div class="flex items-center">
+                    <button class="p-1.5 rounded-md text-gray-400 hover:text-white hover:bg-white/5 transition-colors">
+                        <PanelLeftClose :size="20" />
+                    </button>
                 </div>
-                <SidebarInput placeholder="Type to search..." />
+                <div class="flex items-center space-x-1">
+                    <button class="p-1.5 rounded-md text-gray-400 hover:text-white hover:bg-white/5 transition-colors" title="Sort">
+                        <ArrowUpDown :size="18" />
+                    </button>
+                    <button class="p-1.5 rounded-md text-gray-400 hover:text-white hover:bg-white/5 transition-colors" title="View Options">
+                        <LayoutGrid :size="18" />
+                    </button>
+                    <button class="p-1.5 rounded-md text-gray-400 hover:text-primary hover:bg-white/5 transition-colors" title="New Note">
+                        <Plus :size="18" />
+                    </button>
+                </div>
             </SidebarHeader>
-            <SidebarContent>
-                <SidebarGroup class="px-0">
-                    <SidebarGroupContent>
-                        <a v-for="mail in mails" :key="mail.email" href="#"
-                            class="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground flex flex-col items-start gap-2 border-b p-4 text-sm leading-tight whitespace-nowrap last:border-b-0">
-                            <div class="flex w-full items-center gap-2">
-                                <span>{{ mail.name }}</span>
-                                <span class="ml-auto text-xs">{{ mail.date }}</span>
-                            </div>
-                            <span class="font-medium">{{ mail.subject }}</span>
-                            <span class="line-clamp-2 w-[260px] whitespace-break-spaces text-xs">
-                                {{ mail.teaser }}
-                            </span>
+
+            <SidebarContent class="flex-1 overflow-y-auto py-4 px-3 space-y-6">
+                <!-- Workspace Title -->
+                <div class="flex items-center px-2 pb-2">
+                    <h2 class="text-sm font-semibold text-gray-800 dark:text-gray-200 tracking-wide font-serif">Arch Linux</h2>
+                    <span class="ml-2 px-1.5 py-0.5 text-[10px] bg-primary/10 text-primary border border-primary/20 rounded">WS-1</span>
+                </div>
+
+                <!-- Folders -->
+                <div>
+                    <div class="flex items-center justify-between px-2 mb-2 group cursor-pointer">
+                        <span class="text-xs font-medium text-gray-500 uppercase tracking-wider group-hover:text-gray-300 transition-colors">Folders</span>
+                        <Plus :size="14" class="text-gray-600 group-hover:text-gray-400 opacity-0 group-hover:opacity-100 transition-all" />
+                    </div>
+                    <div class="space-y-0.5">
+                        <a v-for="folder in folders" :key="folder.title" class="flex items-center px-2 py-1.5 text-sm rounded-md text-gray-400 hover:text-gray-200 hover:bg-white/5 transition-colors" href="#">
+                            <Folder :size="18" class="mr-2 opacity-70" />
+                            <span>{{ folder.title }}</span>
                         </a>
-                    </SidebarGroupContent>
-                </SidebarGroup>
+                    </div>
+                </div>
+
+                <!-- Recent Notes -->
+                <div>
+                    <div class="flex items-center justify-between px-2 mb-2 group cursor-pointer">
+                        <span class="text-xs font-medium text-gray-500 uppercase tracking-wider group-hover:text-gray-300 transition-colors">Recent Notes</span>
+                    </div>
+                    <div class="space-y-0.5">
+                        <a v-for="note in recentNotes" :key="note.title" 
+                            class="group flex items-center px-2 py-1.5 text-sm rounded-md relative overflow-hidden transition-colors"
+                            :class="note.active ? 'bg-white/5 text-primary active-glow' : 'text-gray-400 hover:text-gray-200 hover:bg-white/5'"
+                            href="#"
+                        >
+                            <FileText :size="18" class="mr-2 opacity-70" :class="{ 'fill-primary/20': note.active }" />
+                            <span class="truncate" :class="{ 'font-medium': note.active }">{{ note.title }}</span>
+                            <div v-if="note.active" class="absolute right-2 w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_8px_rgba(255,191,0,0.8)]"></div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Tags -->
+                <div>
+                    <div class="px-2 mb-2">
+                        <span class="text-xs font-medium text-gray-500 uppercase tracking-wider">Tags</span>
+                    </div>
+                    <div class="flex flex-wrap gap-2 px-2">
+                        <span v-for="tag in tags" :key="tag" class="px-2 py-1 rounded-full bg-border-dark text-[11px] text-gray-400 border border-transparent hover:border-gray-600 cursor-pointer">
+                            {{ tag }}
+                        </span>
+                    </div>
+                </div>
             </SidebarContent>
+
+            <SidebarFooter class="p-3 border-t border-border-light dark:border-border-dark bg-surface-light dark:bg-sidebar-bg">
+                <div class="relative group">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500 group-focus-within:text-primary transition-colors">
+                        <Search :size="16" />
+                    </span>
+                    <input
+                        class="w-full bg-background-light dark:bg-background-dark border border-transparent focus:border-primary/50 text-sm rounded-md py-1.5 pl-9 pr-3 text-gray-800 dark:text-gray-300 placeholder-gray-600 focus:ring-0 transition-all shadow-sm"
+                        placeholder="Quick Find..." type="text" />
+                    <span class="absolute inset-y-0 right-0 flex items-center pr-2">
+                        <kbd class="hidden group-focus-within:hidden px-1.5 py-0.5 text-[10px] font-mono text-gray-500 border border-gray-700 rounded bg-surface-dark">⌘K</kbd>
+                    </span>
+                </div>
+            </SidebarFooter>
         </Sidebar>
     </Sidebar>
 </template>
