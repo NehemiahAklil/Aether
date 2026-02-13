@@ -36,13 +36,13 @@ const mode = useColorMode()
 </script>
 
 <template>
-    <TooltipProvider>
+    <div class="w-screen">
         <SidebarProvider class="h-full" :style="{
-            '--sidebar-width': '22rem',
+            '--sidebar-width': '19rem',
         }">
             <AppSidebar />
-            
-            <SidebarInset class="bg-background-light dark:bg-background-dark flex flex-col relative overflow-hidden">
+
+            <SidebarInset class="bg-background-light dark:bg-background-dark flex flex-col relative overflow-y-scroll">
                 <header
                     class="h-14 border-b border-border-light dark:border-border-dark flex items-center px-4 md:px-8 justify-between bg-background-light/80 dark:bg-background-dark/80 glass z-10 sticky top-0">
                     <Breadcrumb>
@@ -75,15 +75,16 @@ const mode = useColorMode()
                         </Button>
                     </div>
                 </header>
-                
+
                 <div class="flex-1 overflow-y-auto relative scroll-smooth pb-20">
                     <!-- Glow effect for dark mode -->
                     <div
-                        class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl aspect-square bg-primary/5 rounded-full blur-[100px] pointer-events-none hidden dark:block">
+                        class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-primary/5 rounded-full blur-[100px] pointer-events-none hidden dark:block">
                     </div>
-                    
-                    <article class="w-full max-w-screen-xl mx-auto px-6 py-12 md:py-16 prose dark:prose-invert prose-stone max-w-none">
-                        <h1 class="text-4xl md:text-5xl mb-2 !leading-tight tracking-tight relative inline-block font-serif text-gray-800 dark:text-white">
+
+                    <article class="w-full max-w-3xl mx-auto px-6 py-12 md:py-16 prose dark:prose-invert prose-stone">
+                        <h1
+                            class="text-4xl md:text-5xl mb-2 !leading-tight tracking-tight relative inline-block font-serif text-gray-800 dark:text-white">
                             Vulkan
                             <span
                                 class="absolute -bottom-2 left-0 w-1/3 h-1 bg-gradient-to-r from-primary to-transparent rounded-full opacity-80"></span>
@@ -91,11 +92,12 @@ const mode = useColorMode()
                         <p class="text-xl text-gray-500 dark:text-gray-400 font-light mt-6 leading-relaxed">
                             Vulkan and Hardware Acceleration (Intel Xe) configuration guide.
                         </p>
-                        
+
                         <div class="mt-12 group">
                             <h2
                                 class="flex items-center text-2xl font-serif text-gray-800 dark:text-gray-100 group-hover:text-primary transition-colors duration-300">
-                                <ArrowRight class="mr-2 text-primary opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6 -ml-8" />
+                                <ArrowRight
+                                    class="mr-2 text-primary opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6 -ml-8" />
                                 Vulkan Installation
                             </h2>
                             <p class="text-gray-600 dark:text-gray-400">
@@ -120,11 +122,12 @@ const mode = useColorMode()
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="mt-10 group">
                             <h2
                                 class="flex items-center text-2xl font-serif text-gray-800 dark:text-gray-100 group-hover:text-primary transition-colors duration-300">
-                                <ArrowRight class="mr-2 text-primary opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6 -ml-8" />
+                                <ArrowRight
+                                    class="mr-2 text-primary opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6 -ml-8" />
                                 Optional: 32-bit Support
                             </h2>
                             <p class="text-gray-600 dark:text-gray-400">
@@ -143,15 +146,17 @@ const mode = useColorMode()
                                 <div class="p-4 font-mono text-sm overflow-x-auto text-gray-800 dark:text-gray-300">
                                     <span class="text-yellow-600 dark:text-yellow-500">sudo</span> pacman <span
                                         class="text-blue-600 dark:text-blue-400">-S</span> <span
-                                        class="text-gray-600 dark:text-gray-400">lib32-vulkan-intel lib32-vulkan-icd-loader</span>
+                                        class="text-gray-600 dark:text-gray-400">lib32-vulkan-intel
+                                        lib32-vulkan-icd-loader</span>
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="mt-10 group">
                             <h2
                                 class="flex items-center text-2xl font-serif text-gray-800 dark:text-gray-100 group-hover:text-primary transition-colors duration-300">
-                                <ArrowRight class="mr-2 text-primary opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6 -ml-8" />
+                                <ArrowRight
+                                    class="mr-2 text-primary opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6 -ml-8" />
                                 Verification
                             </h2>
                             <p class="text-gray-600 dark:text-gray-400">
@@ -183,13 +188,14 @@ const mode = useColorMode()
                                 </div>
                             </div>
                         </div>
-                        
+
                         <Separator class="my-12 bg-border-light dark:border-gray-800" />
-                        
+
                         <div class="mt-10 group">
                             <h2
                                 class="flex items-center text-2xl font-serif text-gray-800 dark:text-gray-100 group-hover:text-primary transition-colors duration-300">
-                                <ArrowRight class="mr-2 text-primary opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6 -ml-8" />
+                                <ArrowRight
+                                    class="mr-2 text-primary opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6 -ml-8" />
                                 Hardware Acceleration (VA-API)
                             </h2>
                             <p class="text-gray-600 dark:text-gray-400">
@@ -214,8 +220,9 @@ const mode = useColorMode()
                                 </div>
                             </div>
                         </div>
-                        
-                        <div class="mt-20 pt-6 border-t border-border-light dark:border-gray-800 flex justify-between text-xs text-gray-400 font-mono">
+
+                        <div
+                            class="mt-20 pt-6 border-t border-border-light dark:border-gray-800 flex justify-between text-xs text-gray-400 font-mono">
                             <div class="flex space-x-4">
                                 <button class="hover:text-primary transition-colors">0 backlinks</button>
                                 <button class="hover:text-primary transition-colors">183 words</button>
@@ -228,45 +235,6 @@ const mode = useColorMode()
                     </article>
                 </div>
             </SidebarInset>
-            
-            <!-- Right side narrow bar -->
-            <aside
-                class="hidden xl:flex w-14 border-l border-border-light dark:border-border-dark flex-col items-center py-4 bg-surface-light dark:bg-surface-dark z-20">
-                <Tooltip>
-                    <TooltipTrigger as-child>
-                        <Button variant="ghost" size="icon"
-                            class="p-2 mb-4 text-gray-400 hover:text-primary transition-colors h-10 w-10">
-                            <Calendar class="h-6 w-6" />
-                        </Button>
-                    </TooltipTrigger>
-                    <TooltipContent side="left" class="bg-gray-800 text-white text-xs px-2 py-1 rounded">
-                        Calendar
-                    </TooltipContent>
-                </Tooltip>
-                <Tooltip>
-                    <TooltipTrigger as-child>
-                        <Button variant="ghost" size="icon"
-                            class="p-2 mb-4 text-gray-400 hover:text-primary transition-colors h-10 w-10">
-                            <Search class="h-6 w-6" />
-                        </Button>
-                    </TooltipTrigger>
-                    <TooltipContent side="left" class="bg-gray-800 text-white text-xs px-2 py-1 rounded">
-                        Search
-                    </TooltipContent>
-                </Tooltip>
-                <div class="flex-1"></div>
-                <Tooltip>
-                    <TooltipTrigger as-child>
-                        <Button variant="ghost" size="icon"
-                            class="p-2 mt-4 text-gray-400 hover:text-primary transition-colors h-10 w-10">
-                            <HelpCircle class="h-6 w-6" />
-                        </Button>
-                    </TooltipTrigger>
-                    <TooltipContent side="left" class="bg-gray-800 text-white text-xs px-2 py-1 rounded">
-                        Help
-                    </TooltipContent>
-                </Tooltip>
-            </aside>
         </SidebarProvider>
-    </TooltipProvider>
+    </div>
 </template>
