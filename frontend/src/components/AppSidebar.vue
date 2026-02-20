@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { SidebarProps } from "@/components/ui/sidebar"
+import { Icon } from "@iconify/vue"
 import {
     Flame,
     Terminal,
@@ -58,7 +59,32 @@ const recentNotes = [
 
 const tags = ["#linux", "#gpu", "#config"]
 
-const activeNav = ref("terminal")
+const activeNavIndex = ref<number>(0)
+
+interface NavItem {
+    icon: string,
+    label: string
+}
+const navItems = ref<NavItem[]>([
+    {
+        icon: "solar:programming-outline",
+        label: "Terminal"
+    },
+    {
+        icon: "hugeicons:folder-03",
+        label: "Folder"
+    },
+    {
+        icon: "solar:rocket-2-outline",
+        label: "Project"
+    },
+    {
+        icon: "solar:cloud-outline",
+        label: "Cloud"
+    },
+
+])
+
 </script>
 
 <template>
@@ -74,36 +100,15 @@ const activeNav = ref("terminal")
             </SidebarHeader>
             <SidebarContent class="flex flex-col items-center space-y-3 py-2 no-scrollbar">
                 <SidebarMenu>
-                    <SidebarMenuItem>
+                    <SidebarMenuItem v-for="navItem, index in navItems" :key="index">
                         <SidebarMenuButton
-                            class="w-8 h-8 p-0 flex items-center justify-center rounded-lg transition-all relative"
-                            :class="activeNav === 'terminal' ? 'bg-surface-dark text-primary shadow-[0_0_15px_rgba(255,191,0,0.15)] ring-1 ring-primary/30' : 'text-gray-500 hover:text-gray-300 hover:bg-white/5'"
-                            @click="activeNav = 'terminal'">
-                            <Terminal :size="18" />
-                            <div v-if="activeNav === 'terminal'"
+                            class="w-10 h-10 p-0 flex items-center justify-center rounded-lg transition-all relative mx-auto"
+                            :class="activeNavIndex === index ? 'bg-surface-dark text-primary shadow-[0_0_15px_rgba(255,191,0,0.15)] ring-1 ring-primary/30' : 'text-gray-500 hover:text-gray-300 hover:bg-white/5'"
+                            @click="activeNavIndex = index">
+                            <Icon :icon="navItem.icon" :width="20" />
+                            <div v-if="activeNavIndex === index"
                                 class="absolute left-[-10px] top-1/2 -translate-y-1/2 w-1 h-4 bg-primary rounded-r-full">
                             </div>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton
-                            class="w-8 h-8 p-0 flex items-center justify-center rounded-lg text-gray-500 hover:text-gray-300 hover:bg-white/5 transition-all"
-                            @click="activeNav = 'folder'">
-                            <FolderOpen :size="18" />
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton
-                            class="w-8 h-8 p-0 flex items-center justify-center rounded-lg text-gray-500 hover:text-gray-300 hover:bg-white/5 transition-all"
-                            @click="activeNav = 'rocket'">
-                            <Rocket :size="18" />
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton
-                            class="w-8 h-8 p-0 flex items-center justify-center rounded-lg text-gray-500 hover:text-gray-300 hover:bg-white/5 transition-all"
-                            @click="activeNav = 'cloud'">
-                            <Cloud :size="18" />
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>
@@ -114,8 +119,8 @@ const activeNav = ref("terminal")
                         <SidebarMenuButton
                             class="w-8 h-8 p-0 flex items-center justify-center rounded-lg text-gray-500 hover:text-primary hover:bg-white/5 transition-all"
                             @click="toggleTheme">
-                            <Sun v-if="mode === 'dark'" :size="18" />
-                            <Moon v-else :size="18" />
+                            <Icon icon="solar:sun-outline" v-if="mode === 'dark'" :width="20" />
+                            <Icon icon="solar:moon-landing-outline" v-else :width="20" />
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                     <SidebarMenuItem>
